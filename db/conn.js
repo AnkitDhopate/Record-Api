@@ -1,8 +1,11 @@
 const mongoose = require("mongoose");
+const env = require("dotenv");
+
+env.config();
 
 mongoose
   .connect(
-    `mongodb+srv://AnkitDhopate:!NAyZaC-24F3Lx$@cluster0.cdik6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+    `mongodb+srv://AnkitDhopate:${process.env.MONGO_DB_ATLAS}@cluster0.cdik6.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
     { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true }
   )
   .then(() => {

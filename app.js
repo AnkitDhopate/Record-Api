@@ -1,12 +1,17 @@
 const express = require("express");
 const app = express();
-const Record = require("./models/students");
+const Record = require("./models/record");
 require("./db/conn");
 
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
+app.get("/", (req, res) => {
+  res.send("Hello");
+});
+
+// Creating User
 app.post("/create", async (req, res) => {
   try {
     const user = new Record(req.body);
@@ -18,10 +23,7 @@ app.post("/create", async (req, res) => {
   }
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello");
-});
-
+//Getting users
 app.get("/api", async (req, res) => {
   try {
     const api = await Record.find();
@@ -31,6 +33,7 @@ app.get("/api", async (req, res) => {
   }
 });
 
+// Getting individual user
 app.get("/api/:id", async (req, res) => {
   try {
     const _id = req.params.id;
@@ -42,6 +45,33 @@ app.get("/api/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send(error);
+  }
+});
+
+// Updating user
+app.patch("/update/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const updateRecord = await Record.findByIdAndUpdate(_id, req.body, {
+      new: true,
+    });
+    res.status(201).send(updateRecord);
+  } catch (error) {
+    res.status(400).send(error);
+  }
+});
+
+app.delete("/delete/:id", async (req, res) => {
+  try {
+    const _id = req.params.id;
+    const deleteRecord = await Record.findByIdAndDelete(_id);
+
+    if (!req.params.id) {
+      return res.status(400).send();
+    }
+    res.status(201).send(deleteRecord);
+  } catch (error) {
+    res.status(500).send(error);
   }
 });
 
